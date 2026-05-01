@@ -12,6 +12,10 @@ namespace HenryMod.Survivors.Henry.Components
 
         public bool improved;
 
+        public bool deflecting;
+
+        public bool parry;
+
         private void Awake()
         {
             this.characterBody = base.GetComponent<CharacterBody>();       
@@ -19,7 +23,7 @@ namespace HenryMod.Survivors.Henry.Components
 
         private void Start()
         {
-            characterBody.inventory.GiveItemPermanent(HenryPlugin.myItemDef, 1);
+            characterBody.inventory.GiveItemPermanent(HenryPlugin.ankyHelper, 1);
         }
 
         public void ClearSkillOverrides()

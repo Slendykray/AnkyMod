@@ -1,5 +1,6 @@
 ﻿using EntityStates;
 using HenryMod.Survivors.Henry;
+using HenryMod.Survivors.Henry.Components;
 using RoR2;
 using RoR2.Projectile;
 using UnityEngine;
@@ -14,13 +15,19 @@ namespace HenryMod.Survivors.Henry.SkillStates
 
         public static float DamageCoefficient = 16f;
 
+        HenryWeaponComponent ankyController;
         public override void OnEnter()
         {
+            ankyController = GetComponent<HenryWeaponComponent>();
+            ankyController.ClearSkillOverrides();
+            ankyController.improved = false;
+
             projectilePrefab = HenryAssets.bombProjectilePrefab;
             //base.effectPrefab = Modules.Assets.SomeMuzzleEffect;
             //targetmuzzle = "muzzleThrow"
 
-            attackSoundString = "HenryBombThrow";
+            //attackSoundString = "HenryBombThrow";
+            attackSoundString = "Play_mage_m1_shoot";
 
             baseDuration = BaseDuration;
             baseDelayBeforeFiringProjectile = BaseDelayDuration;
@@ -43,6 +50,7 @@ namespace HenryMod.Survivors.Henry.SkillStates
         {
             base.ModifyProjectileInfo(ref fireProjectileInfo);
             fireProjectileInfo.damageTypeOverride = DamageTypeCombo.GenericSpecial;
+            fireProjectileInfo.speedOverride = 100f;
         }
 
         public override void FixedUpdate()

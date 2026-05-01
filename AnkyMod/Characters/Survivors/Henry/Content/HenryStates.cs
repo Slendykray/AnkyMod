@@ -16,6 +16,14 @@ namespace HenryMod.Survivors.Henry
 
             Modules.Content.AddEntityState(typeof(Roar));
 
+            Modules.Content.AddEntityState(typeof(Deflect));
+
+            Modules.Content.AddEntityState(typeof(Parry));
+
+            Modules.Content.AddEntityState(typeof(Swipe));
+
+            Modules.Content.AddEntityState(typeof(Headbutt));
+
         }
     }
 }

@@ -10,7 +10,14 @@ namespace HenryMod.Survivors.Henry
 
         public const float bombDamageCoefficient = 16f;
 
+     
+        public const float headbuttDamageCoefficient = 2.8f;
+        public const float headbuttImproved = 5f;
+
+        public const float swipeDamageCoefficient = 3.5f;
+        public const float swipeImproved = 3.7f;
 
         public const float roarDamageCoefficient = 0.9f;
+
     }
 }

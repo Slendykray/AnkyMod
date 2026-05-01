@@ -34,7 +34,9 @@ namespace HenryMod
         public static HenryPlugin instance;
 
 
-        public static ItemDef myItemDef;
+        public static ItemDef ankyHelper;
+
+        public static ItemDef roarAddHealth;
 
         void Awake()
         {
@@ -58,24 +60,44 @@ namespace HenryMod
 
         void AddItems()
         {
-            myItemDef = ScriptableObject.CreateInstance<ItemDef>();
+            ankyHelper = ScriptableObject.CreateInstance<ItemDef>();
 
-            myItemDef.name = "ANKY_HELPER_NAME";
-            myItemDef.nameToken = "ANKY_HELPER_NAME";
-            myItemDef.pickupToken = "ANKY_HELPER_PICKUP";
-            myItemDef.descriptionToken = "ANKY_HELPER_DESC";
-            myItemDef.loreToken = "ANKY_HELPER_LORE";
+            ankyHelper.name = "ITEM_ANKYHELPER_NAME";
+            ankyHelper.nameToken = "ITEM_ANKYHELPER_NAME";
+            ankyHelper.pickupToken = "ITEM_ANKYHELPER_PICKUP";
+            ankyHelper.descriptionToken = "ITEM_ANKYHELPER_DESC";
+            ankyHelper.loreToken = "ITEM_ANKYHELPER_LORE";
 
-            myItemDef.pickupIconSprite = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Core/texNullIcon.png").WaitForCompletion();
+            ankyHelper.pickupIconSprite = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Core/texNullIcon.png").WaitForCompletion();
 
-            myItemDef.canRemove = false;
-            myItemDef.hidden = true;
-            myItemDef.tags = new ItemTag[] { ItemTag.WorldUnique };
-            myItemDef.deprecatedTier = ItemTier.NoTier;
+            ankyHelper.canRemove = false;
+            ankyHelper.hidden = true;
+            ankyHelper.tags = new ItemTag[] { ItemTag.WorldUnique };
+            ankyHelper.deprecatedTier = ItemTier.NoTier;
 
             var displayRules = new ItemDisplayRuleDict(null);
 
-            ItemAPI.Add(new CustomItem(myItemDef, displayRules));
+            ItemAPI.Add(new CustomItem(ankyHelper, displayRules));
+
+
+            roarAddHealth = ScriptableObject.CreateInstance<ItemDef>();
+
+            roarAddHealth.name = "ITEM_ROARADDHEALTH_NAME";
+            roarAddHealth.nameToken = "ITEM_ROARADDHEALTH_NAME";
+            roarAddHealth.pickupToken = "ITEM_ROARADDHEALTH_PICKUP";
+            roarAddHealth.descriptionToken = "ITEM_ROARADDHEALTH_DESC";
+            roarAddHealth.loreToken = "ITEM_ROARADDHEALTH_LORE";
+
+            roarAddHealth.pickupIconSprite = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Core/texNullIcon.png").WaitForCompletion();
+
+            roarAddHealth.canRemove = false;
+            roarAddHealth.hidden = true;
+            roarAddHealth.tags = new ItemTag[] { ItemTag.WorldUnique };
+            roarAddHealth.deprecatedTier = ItemTier.NoTier;
+
+            var displayRules1 = new ItemDisplayRuleDict(null);
+
+            ItemAPI.Add(new CustomItem(roarAddHealth, displayRules));
         }
     }
 }

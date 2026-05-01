@@ -1,11 +1,12 @@
-﻿using HenryMod.Modules.BaseStates;
+﻿using EntityStates;
+using HenryMod.Modules.BaseStates;
 using HenryMod.Survivors.Henry.Components;
 using RoR2;
 using UnityEngine;
 
 namespace HenryMod.Survivors.Henry.SkillStates
 {
-    public class SlashCombo : BaseMeleeAttack
+    public class Swipe : BaseMeleeAttack
     {
         HenryWeaponComponent ankyController;
 
@@ -14,15 +15,14 @@ namespace HenryMod.Survivors.Henry.SkillStates
             ankyController = GetComponent<HenryWeaponComponent>();
             ankyController.ClearSkillOverrides();
 
-            hitboxGroupName = "SwordGroup";
+            hitboxGroupName = "SwipeGroup";
 
             damageType = DamageTypeCombo.GenericPrimary;
-            damageCoefficient = HenryStaticValues.swordDamageCoefficient;
+            damageCoefficient = HenryStaticValues.swipeDamageCoefficient;
 
             if (ankyController.improved)
             {
-                damageType.damageType = DamageType.Stun1s;
-                damageCoefficient = HenryStaticValues.swordDamageCoefficient + 5f;
+                damageCoefficient = HenryStaticValues.swipeImproved;
 
                 ankyController.improved = false;
             }
@@ -31,7 +31,7 @@ namespace HenryMod.Survivors.Henry.SkillStates
             procCoefficient = 1f;
             pushForce = 300f;
             bonusForce = Vector3.zero;
-            baseDuration = 1f;
+            baseDuration = 0.6f;
 
             //0-1 multiplier of baseduration, used to time when the hitbox is out (usually based on the run time of the animation)
             //for example, if attackStartPercentTime is 0.5, the attack will start hitting halfway through the ability. if baseduration is 3 seconds, the attack will start happening at 1.5 seconds
@@ -75,6 +75,11 @@ namespace HenryMod.Survivors.Henry.SkillStates
         public override void OnExit()
         {
             base.OnExit();
+        }
+
+        public override InterruptPriority GetMinimumInterruptPriority()
+        {
+            return InterruptPriority.PrioritySkill;
         }
     }
 }

@@ -5,6 +5,7 @@ using RoR2;
 using RoR2.Skills;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace HenryMod.Survivors.Henry.SkillStates
 {
@@ -16,49 +17,58 @@ namespace HenryMod.Survivors.Henry.SkillStates
         private float attackStopwatch;
 
         private int maxAttacks = 5;
-        private int curAttacks;
+        private int curAttacks; 
 
-        private float damageFrequency = 6f;
+        private float damageFrequency = 10f;
 
         private float proc = 1f;
 
-        private float attackRecoil = 2f;
+        private float attackRecoil = 1f;
 
         private OverlapAttack overlapAttack;
+
+        private float healthCost = 0.5f;
 
         public override void OnEnter()
         {
             base.OnEnter();
 
+            float delay = 1f / damageFrequency / this.attackSpeedStat;
+            float dur = delay * maxAttacks;
+            PlayCrossfade("FullBody, Override", "Roar", "Roll.playbackRate", dur, 0.05f);
+
             ankyController = GetComponent<HenryWeaponComponent>();
             ankyController.ClearSkillOverrides();
+              
 
-
-            this.overlapAttack = base.InitMeleeOverlap(HenryStaticValues.roarDamageCoefficient, HenryAssets.swordHitImpactEffect, base.GetModelTransform(), "SwordGroup");
+            this.overlapAttack = base.InitMeleeOverlap(HenryStaticValues.roarDamageCoefficient, HenryAssets.swordHitImpactEffect, base.GetModelTransform(), "RoarGroup");
 
             this.overlapAttack.damageType.damageSource = DamageSource.Special;
 
             overlapAttack.procCoefficient = proc;
 
-           
+            
 
             if (ankyController.improved)
             {
-                //DamageInfo damageInfo = new DamageInfo();
-                ////damageInfo.attacker = attacker;
-                ////damageInfo.inflictor = inflictor;
-                ////damageInfo.force = forceVector + pushAwayForce * overlapInfo.pushDirection;
-                ////damageInfo.physForceFlags = forceInfoFlags;
+                if (NetworkServer.active && base.healthComponent)
+                {
+                    DamageInfo damageInfo = new DamageInfo();
+                    damageInfo.damage = base.healthComponent.combinedHealth * healthCost;
+                    damageInfo.position = base.characterBody.corePosition;
+                    damageInfo.force = Vector3.zero;
+                    damageInfo.damageColorIndex = DamageColorIndex.Default;
+                    damageInfo.crit = false;
+                    damageInfo.attacker = null;
+                    damageInfo.inflictor = null;
+                    damageInfo.damageType = (DamageType.NonLethal | DamageType.BypassArmor);
+                    damageInfo.procCoefficient = 0f;
+                    damageInfo.procChainMask = default(ProcChainMask);
+                    base.healthComponent.TakeDamage(damageInfo);
+                }
 
-                //damageInfo.damage = 35f;
-                ////damageInfo.crit = isCrit;
-                ////damageInfo.position = overlapInfo.hitPosition;
-                ////damageInfo.procChainMask = procChainMask;
-                ////damageInfo.procCoefficient = procCoefficient;
-                ////damageInfo.damageColorIndex = damageColorIndex;
-                ////damageInfo.inflictedHurtbox = overlapInfo.hurtBox;
-                ////damageInfo.damageType = damageType;
-                //healthComponent.TakeDamage(damageInfo);
+                characterBody.inventory.GiveItemPermanent(HenryPlugin.roarAddHealth, 1);
+
                 ankyController.improved = false;
             }           
             else
@@ -138,60 +148,14 @@ namespace HenryMod.Survivors.Henry.SkillStates
             return SkillCatalog.GetSkillDef(index);
         }
 
-   
-
-
-        //public virtual void ImproveSkills()
-        //{
-        //    foreach (GenericSkill skill in skillLocator.allSkills)
-        //    {
-        //        ImproveSkill(skill);
-        //    }
-        //}
-
-        //void ImproveSkill(GenericSkill skill)
-        //{
-        //    if (!FindImprovedDef(skill))
-        //        return;
-
-        //    skill.SetSkillOverride(base.characterBody, FindImprovedDef(skill), GenericSkill.SkillOverridePriority.Contextual);
-        //}
-
-
-
-        //public static void UnsetSkills(CharacterBody body)
-        //{
-        //    foreach (GenericSkill skill in body.skillLocator.allSkills)
-        //    {
-        //        skill.UnsetSkillOverride(body, skill.skillDef, GenericSkill.SkillOverridePriority.Contextual);
-        //    }
-
-        //}
-
-         
-        public override InterruptPriority GetMinimumInterruptPriority()
-        {
-            return InterruptPriority.PrioritySkill;
-        }
-
-        //protected override void PlayAttackAnimation()
-        //{
-        //    PlayCrossfade("Gesture, Override", "Slash" + (1 + swingIndex), playbackRateParam, duration, 0.1f * duration);
-        //}
-
-        //protected override void PlaySwingEffect()
-        //{
-        //    base.PlaySwingEffect();
-        //}
-
-        //protected override void OnHitEnemyAuthority()
-        //{
-        //    base.OnHitEnemyAuthority();
-        //}
-
         public override void OnExit()
         {
             base.OnExit();
         }
+
+        //public override InterruptPriority GetMinimumInterruptPriority()
+        //{
+        //    return InterruptPriority.PrioritySkill;
+        //}
     }
 }

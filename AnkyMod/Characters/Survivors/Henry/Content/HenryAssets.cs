@@ -76,12 +76,15 @@ namespace HenryMod.Survivors.Henry
         private static void CreateBombProjectile()
         {
             //highly recommend setting up projectiles in editor, but this is a quick and dirty way to prototype if you want
-            bombProjectilePrefab = Asset.CloneProjectilePrefab("CommandoGrenadeProjectile", "HenryBombProjectile");
+            //bombProjectilePrefab = Asset.CloneProjectilePrefab("CommandoGrenadeProjectile", "HenryBombProjectile");
+
+            bombProjectilePrefab = Asset.CloneProjectilePrefab("MageFireboltBasic", "AnkyFireballProjectile");
 
             //remove their ProjectileImpactExplosion component and start from default values
-            UnityEngine.Object.Destroy(bombProjectilePrefab.GetComponent<ProjectileImpactExplosion>());
-            ProjectileImpactExplosion bombImpactExplosion = bombProjectilePrefab.AddComponent<ProjectileImpactExplosion>();
-            
+            //UnityEngine.Object.Destroy(bombProjectilePrefab.GetComponent<ProjectileImpactExplosion>());
+            //ProjectileImpactExplosion bombImpactExplosion = bombProjectilePrefab.AddComponent<ProjectileImpactExplosion>();
+            ProjectileImpactExplosion bombImpactExplosion = bombProjectilePrefab.GetComponent<ProjectileImpactExplosion>();
+
             bombImpactExplosion.blastRadius = 16f;
             bombImpactExplosion.blastDamageCoefficient = 1f;
             bombImpactExplosion.falloffModel = BlastAttack.FalloffModel.None;
@@ -90,12 +93,13 @@ namespace HenryMod.Survivors.Henry
             bombImpactExplosion.impactEffect = bombExplosionEffect;
             bombImpactExplosion.lifetimeExpiredSound = Content.CreateAndAddNetworkSoundEventDef("HenryBombExplosion");
             bombImpactExplosion.timerAfterImpact = true;
-            bombImpactExplosion.lifetimeAfterImpact = 0.1f;
+            //bombImpactExplosion.lifetimeAfterImpact = 0.1f;
+            bombImpactExplosion.lifetimeAfterImpact = 0f;
 
             ProjectileController bombController = bombProjectilePrefab.GetComponent<ProjectileController>();
 
-            if (_assetBundle.LoadAsset<GameObject>("HenryBombGhost") != null)
-                bombController.ghostPrefab = _assetBundle.CreateProjectileGhostPrefab("HenryBombGhost");
+            //if (_assetBundle.LoadAsset<GameObject>("HenryBombGhost") != null)
+            //    bombController.ghostPrefab = _assetBundle.CreateProjectileGhostPrefab("HenryBombGhost");
             
             bombController.startSound = "";
         }

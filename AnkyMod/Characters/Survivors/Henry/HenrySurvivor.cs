@@ -47,7 +47,7 @@ namespace HenryMod.Survivors.Henry
 
             maxHealth = 110f,
             healthRegen = 1.5f,
-            armor = 0f,
+            armor = 20f,
 
             jumpCount = 1,
 
@@ -142,6 +142,8 @@ namespace HenryMod.Survivors.Henry
         {
             //example of how to create a HitBoxGroup. see summary for more details
             Prefabs.SetupHitBoxGroup(characterModelObject, "SwordGroup", "SwordHitbox");
+            Prefabs.SetupHitBoxGroup(characterModelObject, "RoarGroup", "RoarHitbox");
+            Prefabs.SetupHitBoxGroup(characterModelObject, "SwipeGroup", "SwipeHitbox");
         }
 
         public override void InitializeEntityStateMachines() 
@@ -240,7 +242,7 @@ namespace HenryMod.Survivors.Henry
                     HENRY_PREFIX + "PRIMARY_SLASH_NAME",
                     HENRY_PREFIX + "PRIMARY_SLASH_DESCRIPTION",
                     assetBundle.LoadAsset<Sprite>("texPrimaryIcon"),
-                    new EntityStates.SerializableEntityStateType(typeof(SkillStates.SlashCombo)),
+                    new EntityStates.SerializableEntityStateType(typeof(SkillStates.Headbutt)),
                     "Weapon",
                     true
                 ));
@@ -252,7 +254,6 @@ namespace HenryMod.Survivors.Henry
 
             SkillDef primaryImproved = UnityEngine.Object.Instantiate(primarySkillDef1);
             primaryImproved.icon = null;
-            //primaryImproved.activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.SlashComboImproved));
             primaryImproved.skillName = primaryImproved.skillName + "Improved";
             ContentAddition.AddSkillDef(primaryImproved);
         }
@@ -270,12 +271,12 @@ namespace HenryMod.Survivors.Henry
                 keywordTokens = new string[] { "KEYWORD_AGILE" },
                 skillIcon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
 
-                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Shoot)),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Swipe)),
                 activationStateMachineName = "Weapon2",
                 interruptPriority = EntityStates.InterruptPriority.Skill,
 
                 baseRechargeInterval = 1f,
-                baseMaxStock = 1,
+                baseMaxStock = 2,
 
                 rechargeStock = 1,
                 requiredStock = 1,
@@ -296,7 +297,12 @@ namespace HenryMod.Survivors.Henry
 
             Skills.AddSecondarySkills(bodyPrefab, secondarySkillDef1);
 
- 
+            SkillDef primaryImproved = UnityEngine.Object.Instantiate(secondarySkillDef1);
+            primaryImproved.icon = null;
+            primaryImproved.skillName = primaryImproved.skillName + "Improved";
+            primaryImproved.fullRestockOnAssign = true;
+            primaryImproved.activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ThrowBomb));
+            ContentAddition.AddSkillDef(primaryImproved);
         }
 
         private void AddUtiitySkills()
@@ -311,7 +317,7 @@ namespace HenryMod.Survivors.Henry
                 skillDescriptionToken = HENRY_PREFIX + "UTILITY_ROLL_DESCRIPTION",
                 skillIcon = assetBundle.LoadAsset<Sprite>("texUtilityIcon"),
 
-                activationState = new EntityStates.SerializableEntityStateType(typeof(Roll)),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Deflect)),
                 activationStateMachineName = "Body",
                 interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
@@ -325,13 +331,13 @@ namespace HenryMod.Survivors.Henry
                 resetCooldownTimerOnUse = false,
                 fullRestockOnAssign = false,
                 dontAllowPastMaxStocks = false,
-                mustKeyPress = false,
-                beginSkillCooldownOnSkillEnd = false,
+                mustKeyPress = true,
+                beginSkillCooldownOnSkillEnd = true,
 
-                isCombatSkill = false,
+                isCombatSkill = true,
                 canceledFromSprinting = false,
                 cancelSprintingOnActivation = false,
-                forceSprintDuringState = true,
+                forceSprintDuringState = false,
             });
 
             Skills.AddUtilitySkills(bodyPrefab, utilitySkillDef1);
@@ -359,7 +365,7 @@ namespace HenryMod.Survivors.Henry
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Roar)),
                 //setting this to the "weapon2" EntityStateMachine allows us to cast this skill at the same time primary, which is set to the "weapon" EntityStateMachine
                 activationStateMachineName = "Body", 
-                interruptPriority = EntityStates.InterruptPriority.Skill,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
 
                 baseRechargeInterval = 4f,
                 baseMaxStock = 1,
@@ -374,7 +380,7 @@ namespace HenryMod.Survivors.Henry
                 mustKeyPress = true,
                 beginSkillCooldownOnSkillEnd = false,
 
-                isCombatSkill = false,
+                isCombatSkill = true,
                 canceledFromSprinting = false,
                 cancelSprintingOnActivation = false,
                 forceSprintDuringState = false,
@@ -485,9 +491,58 @@ namespace HenryMod.Survivors.Henry
             R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
 
             On.RoR2.CharacterBody.TriggerJumpEventGlobally += CharacterBody_TriggerJumpEventGlobally;
+
+            On.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
         }
 
+        private void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo)
+        {
+            HenryWeaponComponent ankyController = self.GetComponent<HenryWeaponComponent>();
+            var body = self.body;
 
+            if (ankyController)
+            {           
+                if (ankyController.deflecting || ankyController.parry)
+                {
+                    HealthComponent healthComponent = damageInfo.attacker.GetComponent<HealthComponent>();
+                    if (healthComponent)
+                    {
+                        DamageInfo newDamageInfo = new DamageInfo();
+
+                        newDamageInfo.damage = damageInfo.damage + body.armor;
+
+                        if (ankyController.parry)
+                        {
+                            newDamageInfo.damage = damageInfo.damage * 30f;
+                  
+                            EffectData effectData = new EffectData
+                            {
+                                origin = body.corePosition,
+                                start = body.corePosition,
+                                scale = body.radius
+                            };
+                            EffectManager.SpawnEffect(CharacterBody.CommonAssets.parryEffect, effectData, true);
+                        }
+ 
+                        newDamageInfo.position = healthComponent.body.corePosition;
+                        newDamageInfo.force = Vector3.zero;
+                        newDamageInfo.damageColorIndex = DamageColorIndex.Default;
+                        newDamageInfo.crit = damageInfo.crit;
+                        newDamageInfo.attacker = null;
+                        newDamageInfo.inflictor = null;
+                        newDamageInfo.damageType = damageInfo.damageType;
+                        newDamageInfo.procCoefficient = damageInfo.procCoefficient;
+                        newDamageInfo.procChainMask = default(ProcChainMask);
+
+                        healthComponent.TakeDamage(newDamageInfo);
+                    }
+
+                    return;
+                }
+            }
+
+            orig(self, damageInfo);
+        }
 
         private void CharacterBody_TriggerJumpEventGlobally(On.RoR2.CharacterBody.orig_TriggerJumpEventGlobally orig, CharacterBody self)
         {
@@ -508,6 +563,10 @@ namespace HenryMod.Survivors.Henry
                     float bonusHealth = GetBonusHealth(sender);
                     float num = bonusHealth * 0.3f;
                     args.baseDamageAdd += num;
+
+
+                    var count = sender.inventory.GetItemCountEffective(HenryPlugin.roarAddHealth.itemIndex);
+                    args.baseHealthAdd += count * 35f;
                 }
             }
                
@@ -519,7 +578,7 @@ namespace HenryMod.Survivors.Henry
 
         private bool HasHelper(CharacterBody self)
         {
-            var count = self.inventory.GetItemCountEffective(HenryPlugin.myItemDef.itemIndex);
+            var count = self.inventory.GetItemCountEffective(HenryPlugin.ankyHelper.itemIndex);
             return count > 0;
         }
 
