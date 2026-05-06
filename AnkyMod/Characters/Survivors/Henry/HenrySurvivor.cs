@@ -9,6 +9,7 @@ using RoR2.Skills;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static RoR2.SolusWing.SolusWingPodAI.Simulation.SimulationState;
 
 namespace HenryMod.Survivors.Henry
 {
@@ -76,6 +77,10 @@ namespace HenryMod.Survivors.Henry
                 new CustomRendererInfo
                 {
                     childName = "Model",
+                },
+                new CustomRendererInfo  
+                {
+                    childName = "AnkyModel",
                 }
         };
 
@@ -303,6 +308,47 @@ namespace HenryMod.Survivors.Henry
             primaryImproved.fullRestockOnAssign = true;
             primaryImproved.activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ThrowBomb));
             ContentAddition.AddSkillDef(primaryImproved);
+
+
+            SkillDef secondarySkillDef2 = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "AnkySpikes",
+                skillNameToken = HENRY_PREFIX + "SECONDARY_GUN_NAME",
+                skillDescriptionToken = HENRY_PREFIX + "SECONDARY_GUN_DESCRIPTION",
+                keywordTokens = new string[] { "KEYWORD_AGILE" },
+                skillIcon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Spikes)),
+                activationStateMachineName = "Weapon2",
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+
+                baseRechargeInterval = 1f,
+                baseMaxStock = 2,
+
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+
+                resetCooldownTimerOnUse = false,
+                fullRestockOnAssign = false,
+                dontAllowPastMaxStocks = false,
+                mustKeyPress = true,
+                beginSkillCooldownOnSkillEnd = false,
+
+                isCombatSkill = true,
+                canceledFromSprinting = false,
+                cancelSprintingOnActivation = false,
+                forceSprintDuringState = false,
+
+            });
+
+            Skills.AddSecondarySkills(bodyPrefab, secondarySkillDef2);
+
+            SkillDef primaryImproved2 = UnityEngine.Object.Instantiate(secondarySkillDef2);
+            primaryImproved2.icon = null;
+            primaryImproved2.skillName = primaryImproved2.skillName + "Improved";
+            primaryImproved2.fullRestockOnAssign = true;
+            ContentAddition.AddSkillDef(primaryImproved2);
         }
 
         private void AddUtiitySkills()
@@ -490,7 +536,7 @@ namespace HenryMod.Survivors.Henry
         {
             R2API.RecalculateStatsAPI.GetStatCoefficients += RecalculateStatsAPI_GetStatCoefficients;
 
-            On.RoR2.CharacterBody.TriggerJumpEventGlobally += CharacterBody_TriggerJumpEventGlobally;
+            //On.RoR2.CharacterBody.TriggerJumpEventGlobally += CharacterBody_TriggerJumpEventGlobally;
 
             On.RoR2.HealthComponent.TakeDamage += HealthComponent_TakeDamage;
         }
@@ -502,6 +548,27 @@ namespace HenryMod.Survivors.Henry
 
             if (ankyController)
             {           
+                if ((damageInfo.damageType & DamageType.FallDamage) != 0)
+                {
+                    Log.Message("FALL DAMAGE!!");
+
+                    //CharacterBody body = attacker.GetComponent<CharacterBody>();
+
+                    float num3 = 0.8f;
+                    float baseDamage = damageInfo.damage * num3;
+
+                    RoR2.Projectile.ProjectileManager.instance.FireProjectile(
+                             HenryAssets.fallProjectilePrefab,
+                             body.corePosition,
+                             Quaternion.identity,
+                             body.gameObject,
+                             baseDamage,
+                             16f,
+                             Util.CheckRoll(body.crit, body.master),
+                             damageType: DamageSource.Primary
+                             );
+                }
+
                 if (ankyController.deflecting || ankyController.parry)
                 {
                     HealthComponent healthComponent = damageInfo.attacker.GetComponent<HealthComponent>();
@@ -548,10 +615,26 @@ namespace HenryMod.Survivors.Henry
         {
             orig(self);
 
+            var body = self;
+
             if (HasHelper(self))
             {
                 Log.Message("cool");
-            }   
+
+                float num3 = 0.8f;
+                float baseDamage = self.maxHealth * num3;
+
+                RoR2.Projectile.ProjectileManager.instance.FireProjectile(
+                         HenryAssets.fallProjectilePrefab,
+                         body.corePosition,
+                         Quaternion.identity,
+                         body.gameObject,
+                         baseDamage,
+                         16f,
+                         Util.CheckRoll(body.crit, body.master),
+                         damageType: DamageSource.Primary
+                         );
+            }
         }
 
         private void RecalculateStatsAPI_GetStatCoefficients(CharacterBody sender, R2API.RecalculateStatsAPI.StatHookEventArgs args)

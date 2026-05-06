@@ -30,7 +30,7 @@ namespace HenryMod.Survivors.Henry.SkillStates
         public override void OnEnter()
         {
          
-
+               
             ankyController = GetComponent<HenryWeaponComponent>();
             ankyController.ClearSkillOverrides();
 
@@ -49,9 +49,11 @@ namespace HenryMod.Survivors.Henry.SkillStates
             characterBody.SetAimTimer(2f);
 
             //PlayCrossfade("Gesture, Override", "Slash" + 1, "Slash.playbackRate", duration, 0.1f * duration);
-
+            //Util.PlaySound("Play_acrid_m2_bite_shoot", gameObject);
+          
+            Util.PlaySound("Play_acrid_m2_bite_hit", gameObject); 
             base.OnEnter();
-        }
+        } 
 
         public override void OnExit()
         {
@@ -81,9 +83,8 @@ namespace HenryMod.Survivors.Henry.SkillStates
             {
                 hasFired = true;
 
-                //characterBody.AddSpreadBloom(1f);
+                characterBody.AddSpreadBloom(1f);
                 //EffectManager.SimpleMuzzleFlash(EntityStates.Commando.CommandoWeapon.FirePistol2.muzzleEffectPrefab, gameObject, muzzleString, false);
-                //GetComponent<StarPlatinum>().StarFingerEnd();
 
                 if (isAuthority)
                 {

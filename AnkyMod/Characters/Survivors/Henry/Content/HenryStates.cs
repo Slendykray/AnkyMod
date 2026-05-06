@@ -24,6 +24,8 @@ namespace HenryMod.Survivors.Henry
 
             Modules.Content.AddEntityState(typeof(Headbutt));
 
+            Modules.Content.AddEntityState(typeof(Spikes));
+
         }
     }
 }

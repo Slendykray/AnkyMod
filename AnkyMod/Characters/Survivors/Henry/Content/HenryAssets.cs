@@ -1,8 +1,10 @@
-﻿using RoR2;
-using UnityEngine;
-using HenryMod.Modules;
-using System;
+﻿using HenryMod.Modules;
+using HenryMod.Survivors.Henry.Components;
+using RoR2;
 using RoR2.Projectile;
+using System;
+using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace HenryMod.Survivors.Henry
 {
@@ -21,6 +23,10 @@ namespace HenryMod.Survivors.Henry
         public static GameObject bombProjectilePrefab;
 
         private static AssetBundle _assetBundle;
+
+        public static GameObject spikeProjectilePrefab;
+
+        public static GameObject fallProjectilePrefab;
 
         public static void Init(AssetBundle assetBundle)
         {
@@ -102,6 +108,35 @@ namespace HenryMod.Survivors.Henry
             //    bombController.ghostPrefab = _assetBundle.CreateProjectileGhostPrefab("HenryBombGhost");
             
             bombController.startSound = "";
+
+
+            //GameObject atg = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Common/MissileProjectile.prefab").WaitForCompletion();
+            //GameObject missileGhost = R2API.PrefabAPI.InstantiateClone(atg, "AnkySpikeProjectile");
+
+            GameObject atg = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/BeetleGuard/Sunder.prefab").WaitForCompletion();
+            GameObject missileGhost = R2API.PrefabAPI.InstantiateClone(atg, "AnkySpikeProjectile");
+            spikeProjectilePrefab = missileGhost;
+            ProjectileOverlapAttack projectileOverlapAttack = spikeProjectilePrefab.GetComponent<ProjectileOverlapAttack>();
+            projectileOverlapAttack.forceVector.z = 1400f;
+
+            UnityEngine.Object.Destroy(spikeProjectilePrefab.GetComponent<ProjectileCharacterController>());
+            spikeProjectilePrefab.AddComponent<SpikeController>();
+            spikeProjectilePrefab.AddComponent<ProjectileTargetComponent>();
+            spikeProjectilePrefab.GetComponent<ProjectileOverlapAttack>().resetInterval = 1f;
+
+
+            fallProjectilePrefab = Asset.CloneProjectilePrefab("CommandoGrenadeProjectile", "AnkyFall");
+            ProjectileImpactExplosion fireExplosion = fallProjectilePrefab.GetComponent<ProjectileImpactExplosion>();
+            fireExplosion.lifetime = 0f;
+            //fireExplosion.dotIndex = DotController.DotIndex.Burn;
+            //fireExplosion.dotDuration = 5f;
+            //fireExplosion.applyDot = true;
+            fireExplosion.blastRadius = 16f;
+            fireExplosion.blastImpactEffect = GlobalEventManager.CommonAssets.igniteOnKillExplosionEffectPrefab;
+            fireExplosion.bonusBlastForce = Vector3.zero;
+            fireExplosion.falloffModel = BlastAttack.FalloffModel.None;
+            ProjectileDamage damage = fallProjectilePrefab.GetComponent<ProjectileDamage>();
+            damage.damageType = DamageType.Generic;
         }
         #endregion projectiles
     }

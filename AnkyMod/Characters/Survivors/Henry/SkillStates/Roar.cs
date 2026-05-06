@@ -33,9 +33,13 @@ namespace HenryMod.Survivors.Henry.SkillStates
         {
             base.OnEnter();
 
+            Util.PlaySound("Play_acrid_sprint_start", gameObject);
+
             float delay = 1f / damageFrequency / this.attackSpeedStat;
             float dur = delay * maxAttacks;
             PlayCrossfade("FullBody, Override", "Roar", "Roll.playbackRate", dur, 0.05f);
+
+
 
             ankyController = GetComponent<HenryWeaponComponent>();
             ankyController.ClearSkillOverrides();
