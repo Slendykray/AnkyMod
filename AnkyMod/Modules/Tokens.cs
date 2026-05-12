@@ -1,4 +1,4 @@
-﻿namespace HenryMod.Modules
+﻿namespace AnkyMod.Modules
 {
     internal static class Tokens
     {
@@ -7,6 +7,11 @@
         public static string DamageText(string text)
         {
             return $"<style=cIsDamage>{text}</style>";
+        }
+
+        public static string IgnitePrefix()
+        {
+            return DamageText("Ignite.");
         }
         public static string DamageValueText(float value)
         {
@@ -20,6 +25,19 @@
         public static string HealthText(string text)
         {
             return $"<style=cIsHealth>{text}</style>";
+        }
+        public static string ImprovedText()
+        {
+            return Tokens.UtilityText("\n\rImproved:");
+        }
+
+        public static string MultDamageValueText(float value, float value2)
+        {
+            return $"<style=cIsDamage>{value}x{value2 * 100}% damage</style>";
+        }
+        public static string GreenText(string text)
+        {
+            return $"<style=cIsHealing>{text}</style>";
         }
         public static string KeywordText(string keyword, string sub)
         {
