@@ -15,10 +15,10 @@ namespace HenryMod.Survivors.Henry.SkillStates
 
         public static float DamageCoefficient = 16f;
 
-        HenryWeaponComponent ankyController;
+        AnkyController ankyController;
         public override void OnEnter()
         {
-            ankyController = GetComponent<HenryWeaponComponent>();
+            ankyController = GetComponent<AnkyController>();
             ankyController.ClearSkillOverrides();
             ankyController.improved = false;
 

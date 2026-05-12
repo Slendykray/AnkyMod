@@ -7,8 +7,33 @@ using UnityEngine.Networking;
 
 namespace HenryMod.Survivors.Henry.Components
 {
-    internal class SpikeController : MonoBehaviour
+    public class SpikeController : MonoBehaviour
     {
+        private float startTime = 0f;
+
+        public bool fly;
+
+        private Vector3 newDownVector;
+
+        private ProjectileTargetComponent targetComponent;
+
+        private TeamFilter teamFilter;
+
+        private BullseyeSearch search = new BullseyeSearch();
+
+        private Vector3 downVector;
+
+        public float velocity = 40f;
+
+        public float lifetime = 4f;
+
+        private float timer;
+
+        private ProjectileController projectileController;
+
+        private CharacterController characterController;
+
+
         private void Awake()
         {
             this.downVector = Vector3.down * 3f;
@@ -94,32 +119,7 @@ namespace HenryMod.Survivors.Henry.Components
             }
             return hurtBox.transform;
         }
-        private float startTime = 0.5f;
 
-        public bool fly;
-        private Vector3 newDownVector;
-
-        private ProjectileTargetComponent targetComponent;
-        private TeamFilter teamFilter;
-        private BullseyeSearch search = new BullseyeSearch();
-
-        // Token: 0x04007B6D RID: 31597
-        private Vector3 downVector;
-
-        // Token: 0x04007B6E RID: 31598
-        public float velocity = 40f;
-
-        // Token: 0x04007B6F RID: 31599
-        public float lifetime = 4f;
-
-        // Token: 0x04007B70 RID: 31600
-        private float timer;
-
-        // Token: 0x04007B71 RID: 31601
-        private ProjectileController projectileController;
-
-        // Token: 0x04007B72 RID: 31602
-        private CharacterController characterController;
 
     }
 }

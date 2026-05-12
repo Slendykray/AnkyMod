@@ -8,11 +8,11 @@ namespace HenryMod.Survivors.Henry.SkillStates
 {
     public class Swipe : BaseMeleeAttack
     {
-        HenryWeaponComponent ankyController;
+        AnkyController ankyController;
 
         public override void OnEnter()
         {
-            ankyController = GetComponent<HenryWeaponComponent>();
+            ankyController = GetComponent<AnkyController>();
             ankyController.ClearSkillOverrides();
 
             hitboxGroupName = "SwipeGroup";

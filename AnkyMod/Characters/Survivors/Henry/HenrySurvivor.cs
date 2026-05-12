@@ -9,7 +9,6 @@ using RoR2.Skills;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using static RoR2.SolusWing.SolusWingPodAI.Simulation.SimulationState;
 
 namespace HenryMod.Survivors.Henry
 {
@@ -137,7 +136,7 @@ namespace HenryMod.Survivors.Henry
         private void AdditionalBodySetup()
         {
             AddHitboxes();
-            bodyPrefab.AddComponent<HenryWeaponComponent>();
+            bodyPrefab.AddComponent<AnkyController>();
 
             //bodyPrefab.AddComponent<HuntressTrackerComopnent>();
             //anything else here
@@ -164,6 +163,8 @@ namespace HenryMod.Survivors.Henry
 
             Prefabs.AddEntityStateMachine(bodyPrefab, "Weapon");
             Prefabs.AddEntityStateMachine(bodyPrefab, "Weapon2");
+
+            Prefabs.AddEntityStateMachine(bodyPrefab, "Pump");
         }
 
         #region skills
@@ -257,10 +258,10 @@ namespace HenryMod.Survivors.Henry
 
             Skills.AddPrimarySkills(bodyPrefab, primarySkillDef1);
 
-            SkillDef primaryImproved = UnityEngine.Object.Instantiate(primarySkillDef1);
-            primaryImproved.icon = null;
-            primaryImproved.skillName = primaryImproved.skillName + "Improved";
-            ContentAddition.AddSkillDef(primaryImproved);
+            //SkillDef primaryImproved = UnityEngine.Object.Instantiate(primarySkillDef1);
+            //primaryImproved.icon = null;
+            //primaryImproved.skillName = primaryImproved.skillName + "Improved";
+            //ContentAddition.AddSkillDef(primaryImproved);
         }
 
         private void AddSecondarySkills()
@@ -270,7 +271,7 @@ namespace HenryMod.Survivors.Henry
             //here is a basic skill def with all fields accounted for
             SkillDef secondarySkillDef1 = Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = "HenryGun",
+                skillName = "AnkySwipe",
                 skillNameToken = HENRY_PREFIX + "SECONDARY_GUN_NAME",
                 skillDescriptionToken = HENRY_PREFIX + "SECONDARY_GUN_DESCRIPTION",
                 keywordTokens = new string[] { "KEYWORD_AGILE" },
@@ -310,7 +311,50 @@ namespace HenryMod.Survivors.Henry
             ContentAddition.AddSkillDef(primaryImproved);
 
 
-            SkillDef secondarySkillDef2 = Skills.CreateSkillDef(new SkillDefInfo
+
+            //SkillDef secondarySkillDef2 = Skills.CreateSkillDef(new SkillDefInfo
+            //{
+            //    skillName = "AnkyFireball",
+            //    skillNameToken = HENRY_PREFIX + "SECONDARY_GUN_NAME",
+            //    skillDescriptionToken = HENRY_PREFIX + "SECONDARY_GUN_DESCRIPTION",
+            //    keywordTokens = new string[] { "KEYWORD_AGILE" },
+            //    skillIcon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
+
+            //    activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.ThrowBomb)),
+            //    activationStateMachineName = "Weapon2",
+            //    interruptPriority = EntityStates.InterruptPriority.Skill,
+
+            //    baseRechargeInterval = 1f,
+            //    baseMaxStock = 1,
+
+            //    rechargeStock = 1,
+            //    requiredStock = 1,
+            //    stockToConsume = 1,
+
+            //    resetCooldownTimerOnUse = false,
+            //    fullRestockOnAssign = false,
+            //    dontAllowPastMaxStocks = false,
+            //    mustKeyPress = true,
+            //    beginSkillCooldownOnSkillEnd = false,
+
+            //    isCombatSkill = true,
+            //    canceledFromSprinting = false,
+            //    cancelSprintingOnActivation = false,
+            //    forceSprintDuringState = false,
+
+            //});
+
+            //Skills.AddSecondarySkills(bodyPrefab, secondarySkillDef2);
+
+            //SkillDef primaryImproved2 = UnityEngine.Object.Instantiate(secondarySkillDef2);
+            //primaryImproved2.icon = null;
+            //primaryImproved2.skillName = primaryImproved2.skillName + "Improved";
+            //primaryImproved2.fullRestockOnAssign = true;
+            //primaryImproved2.activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Swipe));
+            //ContentAddition.AddSkillDef(primaryImproved2);
+
+
+            SkillDef secondarySkillDef3 = Skills.CreateSkillDef(new SkillDefInfo
             {
                 skillName = "AnkySpikes",
                 skillNameToken = HENRY_PREFIX + "SECONDARY_GUN_NAME",
@@ -319,11 +363,11 @@ namespace HenryMod.Survivors.Henry
                 skillIcon = assetBundle.LoadAsset<Sprite>("texSecondaryIcon"),
 
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.Spikes)),
-                activationStateMachineName = "Weapon2",
+                activationStateMachineName = "Body",
                 interruptPriority = EntityStates.InterruptPriority.Skill,
 
                 baseRechargeInterval = 1f,
-                baseMaxStock = 2,
+                baseMaxStock = 1,
 
                 rechargeStock = 1,
                 requiredStock = 1,
@@ -342,13 +386,13 @@ namespace HenryMod.Survivors.Henry
 
             });
 
-            Skills.AddSecondarySkills(bodyPrefab, secondarySkillDef2);
+            Skills.AddSecondarySkills(bodyPrefab, secondarySkillDef3);
 
-            SkillDef primaryImproved2 = UnityEngine.Object.Instantiate(secondarySkillDef2);
-            primaryImproved2.icon = null;
-            primaryImproved2.skillName = primaryImproved2.skillName + "Improved";
-            primaryImproved2.fullRestockOnAssign = true;
-            ContentAddition.AddSkillDef(primaryImproved2);
+            SkillDef primaryImproved3 = UnityEngine.Object.Instantiate(secondarySkillDef3);
+            primaryImproved3.icon = null;
+            primaryImproved3.skillName = primaryImproved3.skillName + "Improved";
+            primaryImproved3.fullRestockOnAssign = true;
+            ContentAddition.AddSkillDef(primaryImproved3);
         }
 
         private void AddUtiitySkills()
@@ -358,7 +402,7 @@ namespace HenryMod.Survivors.Henry
             //here's a skilldef of a typical movement skill.
             SkillDef utilitySkillDef1 = Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = "HenryRoll",
+                skillName = "AnkyDeflect",
                 skillNameToken = HENRY_PREFIX + "UTILITY_ROLL_NAME",
                 skillDescriptionToken = HENRY_PREFIX + "UTILITY_ROLL_DESCRIPTION",
                 skillIcon = assetBundle.LoadAsset<Sprite>("texUtilityIcon"),
@@ -390,10 +434,90 @@ namespace HenryMod.Survivors.Henry
 
             SkillDef primaryImproved = UnityEngine.Object.Instantiate(utilitySkillDef1);
             primaryImproved.icon = null;
-            //primaryImproved.activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.SlashComboImproved));
             primaryImproved.skillName = primaryImproved.skillName + "Improved";
             primaryImproved.fullRestockOnAssign = true;
             ContentAddition.AddSkillDef(primaryImproved);
+
+
+
+
+            SkillDef utilitySkillDef2 = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "AnkyPump",
+                skillNameToken = HENRY_PREFIX + "UTILITY_ROLL_NAME",
+                skillDescriptionToken = HENRY_PREFIX + "UTILITY_ROLL_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("texUtilityIcon"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.StartPump)),
+                activationStateMachineName = "Body",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseRechargeInterval = 4f,
+                baseMaxStock = 1,
+
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+
+                resetCooldownTimerOnUse = false,
+                fullRestockOnAssign = false,
+                dontAllowPastMaxStocks = false,
+                mustKeyPress = true,
+                beginSkillCooldownOnSkillEnd = true,
+
+                isCombatSkill = true,
+                canceledFromSprinting = false,
+                cancelSprintingOnActivation = false,
+                forceSprintDuringState = false,
+            });
+
+            Skills.AddUtilitySkills(bodyPrefab, utilitySkillDef2);
+
+            SkillDef primaryImproved2 = UnityEngine.Object.Instantiate(utilitySkillDef2);
+            primaryImproved2.icon = null;
+            primaryImproved2.skillName = primaryImproved2.skillName + "Improved";
+            primaryImproved2.fullRestockOnAssign = true;
+            ContentAddition.AddSkillDef(primaryImproved2);
+
+
+            SkillDef utilitySkillDef3 = Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = "AnkyCharge",
+                skillNameToken = HENRY_PREFIX + "UTILITY_ROLL_NAME",
+                skillDescriptionToken = HENRY_PREFIX + "UTILITY_ROLL_DESCRIPTION",
+                skillIcon = assetBundle.LoadAsset<Sprite>("texUtilityIcon"),
+
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.StartCharge)),
+                activationStateMachineName = "Body",
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+
+                baseRechargeInterval = 4f,
+                baseMaxStock = 1,
+
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+
+                resetCooldownTimerOnUse = false,
+                fullRestockOnAssign = false,
+                dontAllowPastMaxStocks = false,
+                mustKeyPress = true,
+                beginSkillCooldownOnSkillEnd = true,
+
+                isCombatSkill = true,
+                canceledFromSprinting = false,
+                cancelSprintingOnActivation = false,
+                forceSprintDuringState = true,
+            });
+
+            Skills.AddUtilitySkills(bodyPrefab, utilitySkillDef3);
+
+            SkillDef primaryImproved3 = UnityEngine.Object.Instantiate(utilitySkillDef3);
+            primaryImproved3.icon = null;
+            primaryImproved3.skillName = primaryImproved3.skillName + "Improved";
+            primaryImproved3.fullRestockOnAssign = true;
+            ContentAddition.AddSkillDef(primaryImproved3);
+
         }
 
         private void AddSpecialSkills()
@@ -403,7 +527,7 @@ namespace HenryMod.Survivors.Henry
             //a basic skill. some fields are omitted and will just have default values
             SkillDef specialSkillDef1 = Skills.CreateSkillDef(new SkillDefInfo
             {
-                skillName = "HenryBomb",
+                skillName = "AnkyRoar",
                 skillNameToken = HENRY_PREFIX + "SPECIAL_BOMB_NAME",
                 skillDescriptionToken = HENRY_PREFIX + "SPECIAL_BOMB_DESCRIPTION",
                 skillIcon = assetBundle.LoadAsset<Sprite>("texSpecialIcon"),
@@ -434,11 +558,8 @@ namespace HenryMod.Survivors.Henry
 
             Skills.AddSpecialSkills(bodyPrefab, specialSkillDef1);
 
-
-
             SkillDef primaryImproved = UnityEngine.Object.Instantiate(specialSkillDef1);
             primaryImproved.icon = null;
-            //primaryImproved.activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.RoarImproved));
             primaryImproved.skillName = primaryImproved.skillName + "Improved";
             primaryImproved.fullRestockOnAssign = true;
             ContentAddition.AddSkillDef(primaryImproved);
@@ -543,31 +664,31 @@ namespace HenryMod.Survivors.Henry
 
         private void HealthComponent_TakeDamage(On.RoR2.HealthComponent.orig_TakeDamage orig, HealthComponent self, DamageInfo damageInfo)
         {
-            HenryWeaponComponent ankyController = self.GetComponent<HenryWeaponComponent>();
+            AnkyController ankyController = self.GetComponent<AnkyController>();
             var body = self.body;
 
             if (ankyController)
             {           
-                if ((damageInfo.damageType & DamageType.FallDamage) != 0)
-                {
-                    Log.Message("FALL DAMAGE!!");
+                //if ((damageInfo.damageType & DamageType.FallDamage) != 0)
+                //{
+                //    Log.Message("FALL DAMAGE!!");
 
-                    //CharacterBody body = attacker.GetComponent<CharacterBody>();
+                //    //CharacterBody body = attacker.GetComponent<CharacterBody>();
 
-                    float num3 = 0.8f;
-                    float baseDamage = damageInfo.damage * num3;
+                //    float num3 = 0.8f;
+                //    float baseDamage = damageInfo.damage * num3;
 
-                    RoR2.Projectile.ProjectileManager.instance.FireProjectile(
-                             HenryAssets.fallProjectilePrefab,
-                             body.corePosition,
-                             Quaternion.identity,
-                             body.gameObject,
-                             baseDamage,
-                             16f,
-                             Util.CheckRoll(body.crit, body.master),
-                             damageType: DamageSource.Primary
-                             );
-                }
+                //    RoR2.Projectile.ProjectileManager.instance.FireProjectile(
+                //             HenryAssets.fallProjectilePrefab,
+                //             body.corePosition,
+                //             Quaternion.identity,
+                //             body.gameObject,
+                //             baseDamage,
+                //             16f,
+                //             Util.CheckRoll(body.crit, body.master),
+                //             damageType: DamageSource.Primary
+                //             );
+                //}
 
                 if (ankyController.deflecting || ankyController.parry)
                 {
@@ -617,7 +738,7 @@ namespace HenryMod.Survivors.Henry
 
             var body = self;
 
-            if (HasHelper(self))
+            if (self.GetComponent<AnkyController>())
             {
                 Log.Message("cool");
 
@@ -641,10 +762,10 @@ namespace HenryMod.Survivors.Henry
         {
             if (sender.inventory)
             {
-                if (HasHelper(sender))
+                if (sender.GetComponent<AnkyController>())
                 {
                     float bonusHealth = GetBonusHealth(sender);
-                    float num = bonusHealth * 0.3f;
+                    float num = bonusHealth * HenryStaticValues.passiveHealthDamageCoefficientBuff;
                     args.baseDamageAdd += num;
 
 
@@ -652,18 +773,25 @@ namespace HenryMod.Survivors.Henry
                     args.baseHealthAdd += count * 35f;
                 }
             }
-               
+
             //if (sender.HasBuff(HenryBuffs.armorBuff))
             //{
             //    args.armorAdd += 300;
             //}
+
+            if (sender.HasBuff(HenryBuffs.damageBuff))
+            {
+                float bonusHealth = GetBonusHealth(sender);
+                float num = bonusHealth * HenryStaticValues.pumpHealthDamageCoefficientBuff;
+                args.baseDamageAdd += num;
+            }
         }
 
-        private bool HasHelper(CharacterBody self)
-        {
-            var count = self.inventory.GetItemCountEffective(HenryPlugin.ankyHelper.itemIndex);
-            return count > 0;
-        }
+        //private bool HasHelper(CharacterBody self)
+        //{
+        //    var count = self.inventory.GetItemCountEffective(HenryPlugin.ankyHelper.itemIndex);
+        //    return count > 0;
+        //}
 
         private float GetBonusHealth(CharacterBody characterBody)
         {

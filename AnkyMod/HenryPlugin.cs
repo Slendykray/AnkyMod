@@ -34,7 +34,7 @@ namespace HenryMod
         public static HenryPlugin instance;
 
 
-        public static ItemDef ankyHelper;
+        //public static ItemDef ankyHelper;
 
         public static ItemDef roarAddHealth;
 
@@ -60,24 +60,24 @@ namespace HenryMod
 
         void AddItems()
         {
-            ankyHelper = ScriptableObject.CreateInstance<ItemDef>();
+            //ankyHelper = ScriptableObject.CreateInstance<ItemDef>();
 
-            ankyHelper.name = "ITEM_ANKYHELPER_NAME";
-            ankyHelper.nameToken = "ITEM_ANKYHELPER_NAME";
-            ankyHelper.pickupToken = "ITEM_ANKYHELPER_PICKUP";
-            ankyHelper.descriptionToken = "ITEM_ANKYHELPER_DESC";
-            ankyHelper.loreToken = "ITEM_ANKYHELPER_LORE";
+            //ankyHelper.name = "ITEM_ANKYHELPER_NAME";
+            //ankyHelper.nameToken = "ITEM_ANKYHELPER_NAME";
+            //ankyHelper.pickupToken = "ITEM_ANKYHELPER_PICKUP";
+            //ankyHelper.descriptionToken = "ITEM_ANKYHELPER_DESC";
+            //ankyHelper.loreToken = "ITEM_ANKYHELPER_LORE";
 
-            ankyHelper.pickupIconSprite = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Core/texNullIcon.png").WaitForCompletion();
+            //ankyHelper.pickupIconSprite = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Core/texNullIcon.png").WaitForCompletion();
 
-            ankyHelper.canRemove = false;
-            ankyHelper.hidden = true;
-            ankyHelper.tags = new ItemTag[] { ItemTag.WorldUnique };
-            ankyHelper.deprecatedTier = ItemTier.NoTier;
+            //ankyHelper.canRemove = false;
+            //ankyHelper.hidden = true;
+            //ankyHelper.tags = new ItemTag[] { ItemTag.WorldUnique };
+            //ankyHelper.deprecatedTier = ItemTier.NoTier;
 
-            var displayRules = new ItemDisplayRuleDict(null);
+            //var displayRules = new ItemDisplayRuleDict(null);
 
-            ItemAPI.Add(new CustomItem(ankyHelper, displayRules));
+            //ItemAPI.Add(new CustomItem(ankyHelper, displayRules));
 
 
             roarAddHealth = ScriptableObject.CreateInstance<ItemDef>();
@@ -95,7 +95,7 @@ namespace HenryMod
             roarAddHealth.tags = new ItemTag[] { ItemTag.WorldUnique };
             roarAddHealth.deprecatedTier = ItemTier.NoTier;
 
-            var displayRules1 = new ItemDisplayRuleDict(null);
+            var displayRules = new ItemDisplayRuleDict(null);
 
             ItemAPI.Add(new CustomItem(roarAddHealth, displayRules));
         }

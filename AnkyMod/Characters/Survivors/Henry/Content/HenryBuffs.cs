@@ -8,6 +8,8 @@ namespace HenryMod.Survivors.Henry
         // armor buff gained during roll
         public static BuffDef armorBuff;
 
+        public static BuffDef damageBuff;
+
         public static void Init(AssetBundle assetBundle)
         {
             armorBuff = Modules.Content.CreateAndAddBuff("HenryArmorBuff",
@@ -15,6 +17,13 @@ namespace HenryMod.Survivors.Henry
                 Color.white,
                 false,
                 false);
+
+
+            damageBuff = Modules.Content.CreateAndAddBuff("AnkyDamageBuff",
+             LegacyResourcesAPI.Load<BuffDef>("BuffDefs/AttackSpeedOnCrit").iconSprite,
+             Color.red,
+             false,
+             false);
 
         }
     }

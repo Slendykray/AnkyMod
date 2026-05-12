@@ -5,7 +5,7 @@ using UnityEngine.Networking;
 
 namespace HenryMod.Survivors.Henry.Components
 {
-    internal class HenryWeaponComponent : MonoBehaviour
+    public class AnkyController : MonoBehaviour
     {
         public SkillStateOverrideData skillOverrides;
         private CharacterBody characterBody;
@@ -23,7 +23,7 @@ namespace HenryMod.Survivors.Henry.Components
 
         private void Start()
         {
-            characterBody.inventory.GiveItemPermanent(HenryPlugin.ankyHelper, 1);
+            //characterBody.inventory.GiveItemPermanent(HenryPlugin.ankyHelper, 1);
         }
 
         public void ClearSkillOverrides()

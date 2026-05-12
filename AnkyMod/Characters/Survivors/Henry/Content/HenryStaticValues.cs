@@ -22,5 +22,13 @@ namespace HenryMod.Survivors.Henry
         public const float spikeDamageCoefficient = 3.7f;
         public const float spikeImproved = 4.7f;
 
+        public const float pumpDamageCoefficient = 0.7f;
+        public const float pumpHealthDamageCoefficient = 0.15f;
+        public const float pumpHealthDamageCoefficientBuff = 0.3f;
+
+        public const float passiveHealthDamageCoefficientBuff = 0.3f;
+
+
+        public const float chargeDamageCoefficient = 2.8f;
     }
 }

@@ -3,34 +3,31 @@ using HenryMod.Survivors.Henry;
 using HenryMod.Survivors.Henry.Components;
 using RoR2;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
+using EntityStates.BeetleGuardMonster;
 
 namespace HenryMod.Survivors.Henry.SkillStates
 {
-    public class Parry : BaseSkillState
+    public class StartCharge: BaseSkillState
     {
         private AnkyController ankyController;
-        private float duration = 0.5f;
+
+        private float duration = 1f;
+        private float improvedDuration = 0.55f;
 
         public override void OnEnter()
         {
             base.OnEnter();
+
             ankyController = GetComponent<AnkyController>();
-            ankyController.parry = true;
+            ankyController.ClearSkillOverrides();
 
-            PlayCrossfade("FullBody, Override", "Parry", "Roll.playbackRate", duration, 0.05f);
+            if (ankyController.improved)
+                duration = improvedDuration;
 
-            Vector3 vector = characterBody.corePosition;
-            EffectData effectData = new EffectData
-            {
-                origin = vector,
-                start = vector,
-                rotation = Quaternion.identity,
-                scale = characterBody.radius
-            };
-
-            EffectManager.SpawnEffect(CharacterBody.CommonAssets.parryActivateEffect, effectData, true);
         }
 
 
@@ -41,17 +38,14 @@ namespace HenryMod.Survivors.Henry.SkillStates
 
             if (this.fixedAge >= duration && base.isAuthority)
             {
-                this.outer.SetNextStateToMain();
+                this.outer.SetNextState(new SkillStates.Charge());
             }
-
 
         }
 
         public override void OnExit()
         {
             base.OnExit();
-
-            ankyController.parry = false;
         }
 
     }

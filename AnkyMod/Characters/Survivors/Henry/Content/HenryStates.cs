@@ -26,6 +26,14 @@ namespace HenryMod.Survivors.Henry
 
             Modules.Content.AddEntityState(typeof(Spikes));
 
+            Modules.Content.AddEntityState(typeof(Pump));
+
+            Modules.Content.AddEntityState(typeof(StartPump));
+
+            Modules.Content.AddEntityState(typeof(StartCharge));
+
+            Modules.Content.AddEntityState(typeof(Charge));
+
         }
     }
 }

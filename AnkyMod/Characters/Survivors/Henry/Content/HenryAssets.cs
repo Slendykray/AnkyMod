@@ -137,6 +137,9 @@ namespace HenryMod.Survivors.Henry
             fireExplosion.falloffModel = BlastAttack.FalloffModel.None;
             ProjectileDamage damage = fallProjectilePrefab.GetComponent<ProjectileDamage>();
             damage.damageType = DamageType.Generic;
+
+
+
         }
         #endregion projectiles
     }

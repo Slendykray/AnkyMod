@@ -7,11 +7,11 @@ namespace HenryMod.Survivors.Henry.SkillStates
 {
     public class SlashCombo : BaseMeleeAttack
     {
-        HenryWeaponComponent ankyController;
+        AnkyController ankyController;
 
         public override void OnEnter()
         {
-            ankyController = GetComponent<HenryWeaponComponent>();
+            ankyController = GetComponent<AnkyController>();
             ankyController.ClearSkillOverrides();
 
             hitboxGroupName = "SwordGroup";

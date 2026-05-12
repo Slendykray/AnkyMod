@@ -11,7 +11,7 @@ namespace HenryMod.Survivors.Henry.SkillStates
 {
     public class Roar : BaseState
     {
-        HenryWeaponComponent ankyController;
+        private AnkyController ankyController;
 
 
         private float attackStopwatch;
@@ -41,7 +41,7 @@ namespace HenryMod.Survivors.Henry.SkillStates
 
 
 
-            ankyController = GetComponent<HenryWeaponComponent>();
+            ankyController = GetComponent<AnkyController>();
             ankyController.ClearSkillOverrides();
               
 

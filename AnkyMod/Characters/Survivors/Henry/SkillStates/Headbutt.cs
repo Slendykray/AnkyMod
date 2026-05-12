@@ -8,7 +8,7 @@ namespace HenryMod.Survivors.Henry.SkillStates
 {
     public class Headbutt : BaseState
     {
-        HenryWeaponComponent ankyController;
+        AnkyController ankyController;
 
         public float damageCoefficient = HenryStaticValues.headbuttDamageCoefficient;
         public float procCoefficient = 1f;
@@ -31,7 +31,7 @@ namespace HenryMod.Survivors.Henry.SkillStates
         {
          
                
-            ankyController = GetComponent<HenryWeaponComponent>();
+            ankyController = GetComponent<AnkyController>();
             ankyController.ClearSkillOverrides();
 
             damageType = DamageTypeCombo.GenericPrimary;

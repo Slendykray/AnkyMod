@@ -11,31 +11,28 @@ namespace HenryMod.Survivors.Henry.SkillStates
 {
     public class Spikes : BaseSkillState
     {
-        HenryWeaponComponent ankyController;
+        private AnkyController ankyController;
 
-        private float stopwatch;
-        private float duration = 0.4f;
+        private float duration = 0.3f;
 
-        private int spikesNum = 5;
+        private int spikesNum = 1;
 
         public override void OnEnter()
         {
             base.OnEnter();
 
-            ankyController = GetComponent<HenryWeaponComponent>();
+            ankyController = GetComponent<AnkyController>();
             ankyController.ClearSkillOverrides();
 
 
             float damage = HenryStaticValues.spikeDamageCoefficient;
 
-
             SpikeController spikeController = HenryAssets.spikeProjectilePrefab.GetComponent<SpikeController>();
-            //spikeController.downVector = spikeController.downVectorDefault;
+
             spikeController.fly = ankyController.improved;
+
             if (ankyController.improved)
             {
-                //spikeController.downVector = Vector3.zero;
-
                 damage = HenryStaticValues.spikeImproved;
                 ankyController.improved = false;
             }
@@ -75,16 +72,10 @@ namespace HenryMod.Survivors.Henry.SkillStates
         {
             base.FixedUpdate();
 
-            float deltaTime = base.GetDeltaTime();
-            this.stopwatch += deltaTime;
-
-            if (this.stopwatch >= duration && base.isAuthority)
+            if (this.fixedAge >= duration && base.isAuthority)
             {
                 this.outer.SetNextStateToMain();
             }
-
-
-
         }
 
         public override void OnExit()

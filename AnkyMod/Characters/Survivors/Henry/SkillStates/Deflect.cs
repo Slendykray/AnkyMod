@@ -10,7 +10,7 @@ namespace HenryMod.Survivors.Henry.SkillStates
 {
     public class Deflect : BaseSkillState
     {
-        HenryWeaponComponent ankyController;
+        AnkyController ankyController;
 
         private float stopwatch;
         private float duration = 5f;
@@ -24,7 +24,7 @@ namespace HenryMod.Survivors.Henry.SkillStates
         {
             base.OnEnter();
 
-            ankyController = GetComponent<HenryWeaponComponent>();
+            ankyController = GetComponent<AnkyController>();
             ankyController.ClearSkillOverrides();
             ankyController.deflecting = true;
 
